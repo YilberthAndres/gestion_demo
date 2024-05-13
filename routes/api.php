@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RolController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,9 +19,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+
 Route::group([
     'middleware' => 'api',
-    'prefix' => 'auth'
+    // 'prefix' => 'auth'
 ], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
@@ -28,5 +31,15 @@ Route::group([
     Route::get('me', [AuthController::class, 'me']);
     
 });
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'roles'
+], function ($router) {
+    Route::get('/', [RolController::class, 'index']);
+    Route::get('create', [RolController::class, 'create']);
+    Route::post('store', [RolController::class, 'store']);
+});
+
 
 Route::post('register', [AuthController::class, 'register']);
