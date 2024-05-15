@@ -39,6 +39,8 @@ Route::group([
     Route::get('/', [RolController::class, 'index']);
     Route::get('create', [RolController::class, 'create']);
     Route::post('store', [RolController::class, 'store']);
+    Route::get('edit/{rol_id}', [RolController::class, 'edit']);
+    Route::put('update/{rol_id}', [RolController::class, 'update']);
 });
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 
 class CheckPermission
@@ -11,16 +12,17 @@ class CheckPermission
     public function handle($request, Closure $next, $permission)
     {
         try {
-            // Verifica si el usuario tiene el permiso necesario
+            if (!Auth::check()) {
+                return response()->json(['error' => 'Debe iniciar sesión.'], 401);
+            }
+
             if (!$request->user()->hasPermissionTo($permission)) {
-                // Si no tiene permiso, lanza una excepción UnauthorizedException
                 throw UnauthorizedException::forPermissions([$permission]);
             }
 
             return $next($request);
         } catch (UnauthorizedException $e) {
-            // Captura la excepción y devuelve una respuesta JSON
-            throw new \App\Exceptions\UnauthorizedPermissionException();
+            return response()->json(['error' => 'No tiene permiso para acceder a esta ruta.'], 403);
         }
     }
 }

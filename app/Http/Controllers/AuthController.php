@@ -54,10 +54,18 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
+        try {
+            auth()->logout();  // Cierra la sesión actual del usuario
+            
+            // Invalida el token
+            auth()->invalidate(auth()->getToken());
+    
+            return response()->json(['message' => 'Successfully logged out']);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Failed to logout, please try again'], 500);
+        }
     }
+    
 
     /**
      * Refresh a token.

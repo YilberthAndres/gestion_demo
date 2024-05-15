@@ -28,9 +28,8 @@ class RolController extends Controller
     public function index(Request $request)
     {        
         
-        $roles = Role::All();
+        $roles = Role::select('id', 'name')->orderBy('name')->get();
         return response()->json($roles);
-         
     }
 
     /**
@@ -40,7 +39,7 @@ class RolController extends Controller
      */
     public function create()
     {
-        $permission = Permission::get();
+        $permission = Permission::select('id', 'name')->orderBy('name')->get();
         return response()->json($permission);
     }
 
@@ -90,6 +89,7 @@ class RolController extends Controller
         //
     }
 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -98,8 +98,8 @@ class RolController extends Controller
      */
     public function edit($id)
     {
-        $role = Role::find($id);
-        $permission = Permission::get();
+        $role = Role::find($id, ['id', 'name']);
+        $permission = Permission::select('id', 'name')->orderBy('name')->get();
         $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
             ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
             ->all();
@@ -124,12 +124,16 @@ class RolController extends Controller
             'name' => 'required',
             'permission' => 'required',
         ]);
+
+        $data = $request->json()->all();
+        $name = $data['name'];
+        $permission = $data['permission'];
     
         $role = Role::find($id);
-        $role->name = $request->input('name');
+        $role->name = $name;
         $role->save();
     
-        $role->syncPermissions($request->input('permission'));
+        $role->syncPermissions($permission);
     
         return response()->json(['message' => 'Exitoso']);
                         
