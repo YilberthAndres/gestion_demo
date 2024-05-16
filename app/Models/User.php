@@ -60,4 +60,9 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }    
 
+    public function persona()
+    {
+        return $this->hasOne('App\Models\Personas', 'id', 'persona_id');
+    }
+
 }
