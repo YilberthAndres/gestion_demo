@@ -33,6 +33,16 @@ Route::group([
     
 });
 
+// USER
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'user'
+], function ($router) {
+    Route::get('edit/{user_id}', [UserController::class, 'edit']);
+    
+});
+
+// ROLES
 Route::group([
     'middleware' => 'api',
     'prefix' => 'roles'

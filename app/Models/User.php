@@ -26,6 +26,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'persona_id',
+        'estado_id'
     ];
 
     /**
@@ -62,7 +63,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function persona()
     {
-        return $this->hasOne('App\Models\Personas', 'id', 'persona_id');
+        return $this->hasOne('App\Models\Persona', 'id', 'persona_id');
     }
 
 }

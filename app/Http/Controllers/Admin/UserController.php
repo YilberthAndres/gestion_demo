@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\{
-    User, Persona
+    User, Persona, Maestra
 };
 
 
@@ -45,6 +45,7 @@ class UserController extends Controller
                 $validator->validate(),
                 ['password' => bcrypt($request->password)],
                 ['persona_id' => $persona->id],
+                ['estado_id' => 595],
             ));
     
             return response()->json([
@@ -60,9 +61,28 @@ class UserController extends Controller
 
     public function me()
     {
-        return response()->json(auth()->user());
+        return response()->json(auth()->user()->load('persona'));
     }
     
+
+    public function edit($id)
+    {
+        $tipo_identificaciones  = Maestra::where('padre', 8)->get(['id', 'codigo', 'nombre']);
+        $sexos                  = Maestra::where('padre', 20)->get(['id', 'codigo', 'nombre']);
+        $estados_civiles        = Maestra::where('padre', 24)->get(['id', 'codigo', 'nombre']);
+        $estados                = Maestra::where('padre', 595)->get(['id', 'codigo', 'nombre']);
+        $user                   = auth()->user()->load('persona');
+
+        $data = [
+            'sexos' => $sexos,
+            'tipo_identificaciones' => $tipo_identificaciones,
+            'estados_civiles' => $estados_civiles,
+            'estados' => $estados,
+            'user' => $user,
+        ];
+        
+        return response()->json($data);
+    }
 
     
 }
