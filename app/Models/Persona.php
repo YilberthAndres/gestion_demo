@@ -10,10 +10,32 @@ class Persona extends Model
 {
     use SoftDeletes;
     protected $fillable = [
+        'identificacion',
+        'lugarexpedicion',
+        'fechaexpedicion',
+        'direccion',
+        'telefono',
+        'telefonomovil',
+        'telefonowhatsapp',
+        'email',
+        'sendemail',
+        'fechanacimiento',
         'nombre',
+        'segundonombre',
         'apellido',
-        'email'
+        'segundoapellido',
+        'foto',
+        'pais_id',
+        'departamento_id',
+        'ciudad_id',
+        'zona_id',
+        'barrio',
+        'tipoidentificacion_id',
+        'sexo_id',
+        'ocupacion_id',
+        'observaciones'
     ];
+    
 
     static $rules = [
 		'nombre' => 'required',
