@@ -20,7 +20,7 @@ class CreateMaestrasTable extends Migration
             $table->unsignedBigInteger('padre')->nullable()->comment('Llave foranea del padre');
             $table->unsignedBigInteger('jerarquia')->nullable();
             $table->string('orden', 3)->nullable();
-            $table->tinyInteger('visible')->default(1);
+            $table->tinyInteger('visible')->nullable();
             $table->text('observacion')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('created_by')->default(2);

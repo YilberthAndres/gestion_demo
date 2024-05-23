@@ -21,12 +21,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
+Route::group([], function () {
+    Route::post('login', [AuthController::class, 'login'])->withoutMiddleware(\App\Http\Middleware\CheckLogin::class);
+    Route::post('register', [UserController::class, 'register'])->withoutMiddleware(\App\Http\Middleware\CheckLogin::class);
+});
+
 
 Route::group([
     'middleware' => 'api',
     // 'prefix' => 'auth'
 ], function ($router) {
-    Route::post('login', [AuthController::class, 'login']);
+    // Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::get('me', [UserController::class, 'me']);
@@ -39,7 +44,7 @@ Route::group([
     'prefix' => 'user'
 ], function ($router) {
     Route::get('edit/{user_id}', [UserController::class, 'edit']);
-    
+    Route::put('update/{user_id}', [UserController::class, 'update']);
 });
 
 // ROLES
@@ -55,4 +60,4 @@ Route::group([
 });
 
 
-Route::post('register', [UserController::class, 'register']);
+// Route::post('register', [UserController::class, 'register']);

@@ -12,10 +12,7 @@ class CheckPermission
     public function handle($request, Closure $next, $permission)
     {
         try {
-            if (!Auth::check()) {
-                return response()->json(['error' => 'Debe iniciar sesión.'], 401);
-            }
-
+           
             if (!$request->user()->hasPermissionTo($permission)) {
                 throw UnauthorizedException::forPermissions([$permission]);
             }

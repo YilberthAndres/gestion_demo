@@ -84,5 +84,11 @@ class UserController extends Controller
         return response()->json($data);
     }
 
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+        ]);
+    }
     
 }

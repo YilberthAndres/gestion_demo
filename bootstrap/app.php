@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \App\Http\Middleware\CheckPermission::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
+
+        $middleware->api(append:[
+            \App\Http\Middleware\CheckLogin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
