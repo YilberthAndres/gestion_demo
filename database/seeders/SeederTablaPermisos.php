@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-
-//agregamos el modelo de permisos de spatie
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class SeederTablaPermisos extends Seeder
 {
@@ -16,18 +15,27 @@ class SeederTablaPermisos extends Seeder
      */
     public function run()
     {
+        // Definir los permisos
         $permisos = [
-            //Roles
-            'ver-rol',
-            'crear-rol',
-            'editar-rol',
-            'borrar-rol',
+            // Roles
+            'list-rol',
+            'add-rol',
+            'update-rol',
+            'delete-rol',
             // User
-            'edit_rol_user',
+            'list_rol_user',
+            'add_rol_user',
+            'update_rol_user',
+            'delete_rol_user',
         ];
 
-        foreach($permisos as $permiso) {
-            Permission::create(['name'=>$permiso]);
+        // Crear los permisos
+        foreach ($permisos as $permiso) {
+            Permission::firstOrCreate(['name' => $permiso]);
         }
+
+        // Crear un rol y asignarle todos los permisos
+        $rol = Role::firstOrCreate(['name' => 'admin']);
+        $rol->syncPermissions(Permission::all());
     }
 }

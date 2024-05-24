@@ -14,45 +14,67 @@ use App\Models\{
 class UserController extends Controller
 {
 
+    protected function rules_create()
+    {
+        return [
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
+            'estado_id' => 'required|integer',
+            'rol_id' => 'required|integer',
+            'persona.identificacion' => 'required|integer',
+            'persona.lugarexpedicion' => 'nullable|string',
+            'persona.fechaexpedicion' => 'nullable|date',
+            'persona.direccion' => 'required|string',
+            'persona.telefono' => 'nullable|integer',
+            'persona.telefonomovil' => 'required|integer',
+            'persona.telefonowhatsapp' => 'required|integer',
+            'persona.email' => 'required|email',
+            'persona.sendemail' => 'required|in:0,1',
+            'persona.fechanacimiento' => 'nullable|date',
+            'persona.nombre' => 'required|string|max:50',
+            'persona.segundonombre' => 'nullable|string|max:50',
+            'persona.apellido' => 'required|string|max:50',
+            'persona.segundoapellido' => 'nullable|string|max:50',
+            'persona.foto' => 'nullable|string',
+            'persona.pais_id' => 'nullable|integer',
+            'persona.departamento_id' => 'nullable|integer',
+            'persona.ciudad_id' => 'nullable|integer',
+            'persona.zona_id' => 'nullable|integer',
+            'persona.barrio' => 'required|string',
+            'persona.tipoidentificacion_id' => 'required|integer',
+            'persona.sexo_id' => 'required|integer',
+            'persona.ocupacion_id' => 'nullable|integer',
+            'persona.observaciones' => 'nullable|string',
+        ];
+    }
+
     public function register(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required',
-                'email' => 'required|string|email|max:100|unique:users',
-                'password' => 'required|string|min:6',
-                'nombre' => 'required',
-                'apellido' => 'required',
-            ]);
-            
-            if($validator->fails()){
-                return response()->json($validator->errors()->toJson(),400);
-            }
+            DB::beginTransaction();
 
-            $data = $request->json()->all();
-            $nombre = $data['nombre'];
-            $apellido = $data['apellido'];
-            $email = $data['email'];
+            $validatedData = $request->validate($this->rules_create());
 
-            $persona = Persona::create([
-                "nombre" => $nombre,
-                "apellido" => $apellido,
-                "email" => $email,
-            ]);
-            
-            
+            $persona = Persona::create($validatedData['persona']);
+
             $user = User::create(array_merge(
-                $validator->validate(),
-                ['password' => bcrypt($request->password)],
+                $validatedData,
+                ['password' => bcrypt($validatedData['password'])],
                 ['persona_id' => $persona->id],
-                ['estado_id' => 595],
+                ['estado_id' => $validatedData['estado_id']],
             ));
-    
+
+            $user->assignRole($validatedData['rol_id']);
+
+            DB::commit();
+
             return response()->json([
                 'message' => '¡Usuario registrado exitosamente!',
-                // 'user' => $user
-            ], 201);
-        }catch (\Throwable $th) {
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+
             return response()->json([
                 'message' => $th->getMessage(),
             ], 500);
@@ -123,23 +145,37 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try {
+
+            DB::beginTransaction();
+    
             $validatedData = $request->validate($this->rules_update());
-
+        
             $user = User::find($id);
-            DB::table('model_has_roles')->where('model_id',$id)->delete();
-            $user->assignRole($validatedData['rol_id']);
-
             $persona = Persona::find($user->persona->id);
             $persona->update($validatedData['persona']);
-  
+
+            DB::table('model_has_roles')->where('model_id', $id)->delete();
+            $user->assignRole($validatedData['rol_id']);
+        
+            DB::commit();
+        
             return response()->json([
                 'message' => 'Datos actualizados correctamente'
             ], 200);
-    
+        
         } catch (ValidationException $e) {
+            DB::rollback();
+        
             return response()->json([
                 'errors' => $e->errors(),
             ], 422);
+        
+        } catch (\Throwable $th) {
+            DB::rollback();
+        
+            return response()->json([
+                'message' => $th->getMessage(),
+            ], 500);
         }
     }
     
