@@ -120,22 +120,26 @@ class RolController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'permission' => 'required',
-        ]);
+        try{
+            $this->validate($request, [
+                'name' => 'required',
+                'permission' => 'required',
+            ]);
 
-        $data = $request->json()->all();
-        $name = $data['name'];
-        $permission = $data['permission'];
-    
-        $role = Role::find($id);
-        $role->name = $name;
-        $role->save();
-    
-        $role->syncPermissions($permission);
-    
-        return response()->json(['message' => 'Exitoso']);
+            $data = $request->json()->all();
+            $name = $data['name'];
+            $permission = $data['permission'];
+        
+            $role = Role::find($id);
+            $role->name = $name;
+            $role->save();
+        
+            $role->syncPermissions($permission);
+        
+            return response()->json(['message' => 'Exitoso']);
+        } catch (ValidationException $e) {
+            return response()->json($e->errors(), 500);
+        }
                         
     }
 

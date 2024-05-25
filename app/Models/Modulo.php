@@ -3,39 +3,32 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Models\{
+    Rol
+};
 class Modulo extends Model
 {
-    use SoftDeletes;
-
     protected $table = 'modulos';
 
     protected $fillable = [
-        'name',
-        'path',
-        'icon',
-        'children',
-        'order',
-        'created_by_id',
-        'updated_by_id',
-        'deleted_by'
+        'name', 'path', 'icon', 'children', 'order', 
+        'created_at', 'updated_at', 'deleted_at', 
+        'deleted_by', 'created_by_id', 'updated_by_id'
     ];
 
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-
-    public function creator()
+    public function roles()
     {
-        return $this->belongsTo(User::class, 'created_by_id');
+        return $this->belongsToMany(Rol::class, 'modulos_roles', 'modulo_id', 'rol_id');
     }
 
-    public function updater()
+    public function children()
     {
-        return $this->belongsTo(User::class, 'updated_by_id');
+        return $this->hasMany(Modulo::class, 'children');
     }
 
-    public function deleter()
+    public function parent()
     {
-        return $this->belongsTo(User::class, 'deleted_by');
+        return $this->belongsTo(Modulo::class, 'children');
     }
 }
+
