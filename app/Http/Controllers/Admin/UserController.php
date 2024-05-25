@@ -52,7 +52,7 @@ class UserController extends Controller
     public function register(Request $request)
     {
         try {
-            DB::beginTransaction();
+            DB::bteginTransaction();
 
             $validatedData = $request->validate($this->rules_create());
 
@@ -73,7 +73,7 @@ class UserController extends Controller
                 'message' => '¡Usuario registrado exitosamente!',
             ], 200);
         } catch (\Throwable $th) {
-            DB::rollback();
+            // DB::rollback();
 
             return response()->json([
                 'message' => $th->getMessage(),

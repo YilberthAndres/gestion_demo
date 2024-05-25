@@ -27,6 +27,11 @@ class SeederTablaPermisos extends Seeder
             'add_rol_user',
             'update_rol_user',
             'delete_rol_user',
+            // Modulo
+            'list_module',
+            'add_module',
+            'update_module',
+            'delete_module',
         ];
 
         // Crear los permisos

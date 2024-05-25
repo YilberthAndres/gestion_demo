@@ -1,0 +1,161 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class ModulosTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::table('modulos')->insert([
+            [
+                'id' => 1,
+                'name' => 'Administracion',
+                'path' => '',
+                'icon' => 'fas fa-user-shield',
+                'children' => NULL,
+                'order' => 1,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+                'deleted_at' => NULL,
+                'deleted_by' => NULL,
+                'created_by_id' => 1,
+                'updated_by_id' => NULL,
+            ],
+            [
+                'id' => 2,
+                'name' => 'Inventario',
+                'path' => '',
+                'icon' => 'fas fa-boxes',
+                'children' => NULL,
+                'order' => 2,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+                'deleted_at' => NULL,
+                'deleted_by' => NULL,
+                'created_by_id' => 1,
+                'updated_by_id' => NULL,
+            ],
+            [
+                'id' => 3,
+                'name' => 'Ventas',
+                'path' => '',
+                'icon' => 'fas fa-store',
+                'children' => NULL,
+                'order' => 3,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+                'deleted_at' => NULL,
+                'deleted_by' => NULL,
+                'created_by_id' => 1,
+                'updated_by_id' => NULL,
+            ],
+            [
+                'id' => 4,
+                'name' => 'Proveedores',
+                'path' => '',
+                'icon' => 'fas fa-people-carry',
+                'children' => NULL,
+                'order' => 4,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+                'deleted_at' => NULL,
+                'deleted_by' => NULL,
+                'created_by_id' => 1,
+                'updated_by_id' => NULL,
+            ],
+            [
+                'id' => 5,
+                'name' => 'Clientes',
+                'path' => '',
+                'icon' => 'fas fa-user-tag',
+                'children' => NULL,
+                'order' => 5,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+                'deleted_at' => NULL,
+                'deleted_by' => NULL,
+                'created_by_id' => 1,
+                'updated_by_id' => NULL,
+            ],
+            [
+                'id' => 6,
+                'name' => 'Acceso',
+                'path' => '',
+                'icon' => 'fas fa-sitemap',
+                'children' => NULL,
+                'order' => 6,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+                'deleted_at' => NULL,
+                'deleted_by' => NULL,
+                'created_by_id' => 1,
+                'updated_by_id' => NULL,
+            ],
+            [
+                'id' => 7,
+                'name' => 'Roles',
+                'path' => '/roles',
+                'icon' => '',
+                'children' => '7',
+                'order' => 1,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+                'deleted_at' => NULL,
+                'deleted_by' => NULL,
+                'created_by_id' => 1,
+                'updated_by_id' => NULL,
+            ],
+            [
+                'id' => 8,
+                'name' => 'Funcionarios',
+                'path' => '/funcionarios',
+                'icon' => '',
+                'children' => '1',
+                'order' => 1,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+                'deleted_at' => NULL,
+                'deleted_by' => NULL,
+                'created_by_id' => 1,
+                'updated_by_id' => NULL,
+            ],
+            [
+                'id' => 9,
+                'name' => 'Modulos',
+                'path' => '/modulos',
+                'icon' => '',
+                'children' => '7',
+                'order' => 1,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+                'deleted_at' => NULL,
+                'deleted_by' => NULL,
+                'created_by_id' => 1,
+                'updated_by_id' => NULL,
+            ],
+            [
+                'id' => 10,
+                'name' => 'Seguridad',
+                'path' => '',
+                'icon' => 'fas fa-shield-alt',
+                'children' => NULL,
+                'order' => 7,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+                'deleted_at' => NULL,
+                'deleted_by' => NULL,
+                'created_by_id' => 1,
+                'updated_by_id' => NULL,
+            ],
+        ]);
+    }
+}
