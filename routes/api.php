@@ -3,9 +3,14 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RolController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ModuloController;
+
+// CONTROLLERS ADMIN
+use App\Http\Controllers\Admin\{
+    ModuloController,
+    RolController,
+    UserController
+};
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -53,7 +58,8 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'roles'
 ], function ($router) {
-    Route::get('', [RolController::class, 'index']);
+    Route::get('/', [RolController::class, 'index']);
+    Route::get('find/{rol_id}', [RolController::class, 'find']);
     Route::get('create', [RolController::class, 'create']);
     Route::post('store', [RolController::class, 'store']);
     Route::get('edit/{rol_id}', [RolController::class, 'edit']);
@@ -65,12 +71,15 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'modulos'
 ], function ($router) {
-    Route::get('', [ModuloController::class, 'index']);
+    Route::get('/', [ModuloController::class, 'index']);
     Route::get('find/{id}', [ModuloController::class, 'show']);
     Route::get('create', [ModuloController::class, 'create']);
     Route::post('store', [ModuloController::class, 'store']);
     Route::put('update/{id}', [ModuloController::class, 'update']);
     Route::delete('delete/{id}', [ModuloController::class, 'destroy']);
+
+    // Listar todos los módulos de un rol
+    Route::get('find_rol/{id}', [ModuloController::class, 'find_rol']);
 });
 
 
