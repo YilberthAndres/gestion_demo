@@ -82,6 +82,3 @@ Route::group([
     // Listar todos los módulos de un rol
     Route::get('find_rol/{id}', [ModuloController::class, 'find_rol']);
 });
-
-
-// Route::post('register', [UserController::class, 'register']);
