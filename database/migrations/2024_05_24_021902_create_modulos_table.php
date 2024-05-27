@@ -18,7 +18,7 @@ class CreateModulosTable extends Migration
             $table->string('name', 191)->nullable();
             $table->string('path', 191)->nullable();
             $table->string('icon', 191)->nullable();
-            $table->string('children', 191)->nullable();
+            $table->string('parent_id', 191)->nullable();
             $table->integer('order')->nullable();
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();

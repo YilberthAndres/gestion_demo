@@ -8,7 +8,7 @@ class ModuloRol extends Model
     protected $table = 'modulos_roles';
 
     protected $fillable = [
-        'modulo_id', 'rol_id', 'created_at', 'updated_at'
+        'modulo_id', 'rol_id'
     ];
 
     public function modulo()

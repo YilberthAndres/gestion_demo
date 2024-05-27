@@ -72,9 +72,10 @@ Route::group([
     'prefix' => 'modulos'
 ], function ($router) {
     Route::get('/', [ModuloController::class, 'index']);
-    Route::get('find/{id}', [ModuloController::class, 'show']);
+    Route::get('find/{id}', [ModuloController::class, 'find']);
     Route::get('create', [ModuloController::class, 'create']);
     Route::post('store', [ModuloController::class, 'store']);
+    Route::get('edit/{id}', [ModuloController::class, 'edit']);
     Route::put('update/{id}', [ModuloController::class, 'update']);
     Route::delete('delete/{id}', [ModuloController::class, 'destroy']);
 

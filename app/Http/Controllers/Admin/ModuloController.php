@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{
-    Modulo
+    Modulo,
+    ModuloRol
 };
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
 
 class ModuloController extends Controller
 {
@@ -19,31 +21,41 @@ class ModuloController extends Controller
         $this->middleware('permission:delete-module', ['only' => ['destroy']]);
     }
 
-    // Listar todos los módulos con sus hijos
+    // Listar todos los modulos con hijos y los campos especificados
     public function index(Request $request)
     {
-        $rolId = $request->query('rol_id', 1); 
+        try {
+            $modulos = Modulo::allModulos();
+            
+            return response()->json($modulos);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
-        $modulos = Modulo::with(['children' => function($query) use ($rolId) {
-            $query->whereHas('roles', function($query) use ($rolId) {
-                $query->where('rol_id', $rolId);
-            })->orderBy('order');
-            $query->with(['children' => function($subQuery) use ($rolId) {
-                $subQuery->whereHas('roles', function($subQuery) use ($rolId) {
-                    $subQuery->where('rol_id', $rolId);
-                })->orderBy('order');
-            }]);
-        }])
-        ->whereNull('children')
-        ->whereHas('roles', function($query) use ($rolId) {
-            $query->where('rol_id', $rolId);
-        })
-        ->orderBy('order')
-        ->select(['id', 'name', 'path', 'icon', 'order']) 
-        ->get();
-    
+    // Mostrar un módulo y sus hijos
+    public function find($id)
+    {
+        try {
+            $modulo = Modulo::findModulos($id);
+            
+            return response()->json($modulo);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
-        return response()->json($modulos);
+    // Listar todos los módulos con sus hijos
+    public function find_rol(Request $request, $id)
+    {
+        try{
+            $modulos = Modulo::findRol($id);
+        
+            return response()->json($modulos);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function create(Request $request)
@@ -64,23 +76,40 @@ class ModuloController extends Controller
             'name' => 'required|string|max:191',
             'path' => 'nullable|string|max:191',
             'icon' => 'nullable|string|max:191',
-            'children' => 'nullable|integer|exists:modulos,id',
+            'parent_id' => 'nullable|integer|exists:modulos,id',
             'order' => 'nullable|integer',
             'roles' => 'required',
         ]);
 
+        $user_id = Auth::id();
+        $validated['created_by_id'] = $user_id;
+
         $modulo = Modulo::create($validated);
 
-        return response()->json($modulo, 201);
+        $modulo_id = $modulo->id;
+
+        foreach ($validated['roles'] as $key => $rol_id) {
+            ModuloRol::create(['modulo_id' => $modulo_id , 'rol_id' => $rol_id, 'created_by_id' => $user_id]);
+        }
+
+        return response()->json(['message' => "success"]);
     }
 
-    // Mostrar un módulo específico
-    public function show($id)
+
+    public function edit(Request $request, $id)
     {
-        $modulo = Modulo::with('children')->findOrFail($id);
+        $modulo = Modulo::findModulos($id);
+        $roles = Role::select('id', 'name')->orderBy('name')->get();
+        $modulos = Modulo::select('id', 'name')->orderBy('name')->get();
 
-        return response()->json($modulo);
+
+        return response()->json([
+            'modulo' => $modulo,
+            'modulos' => $modulos,
+            'roles' => $roles,
+        ]);
     }
+
 
     // Actualizar un módulo
     public function update(Request $request, $id)
@@ -89,14 +118,24 @@ class ModuloController extends Controller
             'name' => 'sometimes|required|string|max:191',
             'path' => 'nullable|string|max:191',
             'icon' => 'nullable|string|max:191',
-            'children' => 'nullable|integer|exists:modulos,id',
+            'parent_id' => 'nullable|integer|exists:modulos,id',
             'order' => 'nullable|integer',
+            'roles' => 'required',
         ]);
+
+        $user_id = Auth::id();
+        $validated['update_by_id'] = $user_id;
 
         $modulo = Modulo::findOrFail($id);
         $modulo->update($validated);
+        $modulo_id = $modulo->id;
 
-        return response()->json($modulo);
+        foreach ($validated['roles'] as $key => $rol_id) {
+            $modulo = Modulo::findOrFail($rol_id);
+            $modulo->update(['parent_id' => $modulo_id]);
+        }
+
+        return response()->json(['message' => "success"]);
     }
 
     // Eliminar un módulo
